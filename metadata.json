@@ -1,0 +1,8 @@
+{
+  "name": "Korax Skin",
+  "description": "Minecraft skins and capes gallery (Free/Paid) with admin panel.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
