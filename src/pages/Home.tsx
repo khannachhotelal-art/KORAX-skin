@@ -42,19 +42,46 @@ export default function Home() {
   const filteredItems = items.filter(item => filter === 'all' || item.type === filter);
 
   return (
-    <div className="space-y-8">
-      <div className="flex justify-center gap-3">
+    <div className="space-y-6">
+      
+      {/* Header section */}
+      <div>
+        <h1 className="text-3xl font-extrabold text-white mb-1 tracking-tight">Minecraft Skins</h1>
+        <p className="text-[#a0a0a0] text-sm font-medium">Discover thousands of Minecraft skins</p>
+      </div>
+      
+      {/* Fake Banner */}
+      <div className="w-full h-24 bg-indigo-600 rounded-lg flex items-center justify-center font-black text-white text-3xl tracking-widest uppercase shadow-md my-6 overflow-hidden relative">
+         <div className="absolute inset-0 bg-[url('https://textures.minecraft.net/texture/4abeee6d1f1489e240212f71f6bedeaa4ae2baeb3e31c81cc6574f260be7fa01')] bg-cover bg-center opacity-10 filter blur-sm"></div>
+         VOICE CHAT <span className="text-yellow-400 ml-2">FOR MINECRAFT</span>
+      </div>
+
+      {/* Search Bar */}
+      <div className="relative flex items-center bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl px-4 py-3">
+         <Sparkles className="w-5 h-5 text-neutral-500 mr-3" />
+         <input 
+           type="text" 
+           placeholder="Hot" 
+           className="bg-transparent border-none outline-none text-neutral-300 w-full placeholder:text-neutral-600 font-medium"
+         />
+         <button className="flex items-center gap-2 bg-[#2a2a2a] hover:bg-[#333] px-3 py-1.5 rounded-lg text-xs font-semibold text-neutral-400 transition-colors ml-2">
+           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l8.29-8.29c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+           Tags
+         </button>
+      </div>
+
+      <div className="flex gap-2 p-1 bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl w-full">
         {(['all', 'skin', 'cape'] as const).map(f => (
           <button 
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-6 py-2 rounded-md font-medium transition-colors ${
+            className={`flex-1 py-3 items-center justify-center flex rounded-lg text-sm font-semibold transition-colors ${
               filter === f 
-                ? 'bg-neutral-800 text-white' 
-                : 'bg-transparent text-neutral-400 hover:text-white hover:bg-neutral-900'
+                ? 'bg-[#2a2a2a] text-white' 
+                : 'bg-transparent text-neutral-500 hover:text-white hover:bg-[#222]'
             }`}
           >
-            {f === 'all' ? 'All' : f === 'skin' ? 'Skins' : 'Capes'}
+            {f === 'all' ? '🔥 Trending Today' : f === 'skin' ? '👑 Most used' : '🕒 Latest'}
           </button>
         ))}
       </div>
@@ -70,34 +97,26 @@ export default function Home() {
           <p className="text-neutral-500 mt-2">New arrivals are currently being crafted. Check back soon.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-10 mt-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 mt-6">
           {filteredItems.map(item => (
-            <Link to={`/item/${item.id}`} key={item.id} className="flex flex-col group items-center">
-              <div className="relative w-full aspect-[2/3] bg-white rounded-2xl flex items-center justify-center overflow-hidden shadow-lg group-hover:scale-[1.02] transition-transform duration-300">
-                <div className="absolute inset-0">
+            <Link to={`/item/${item.id}`} key={item.id} className="group">
+              <div className="relative w-full aspect-[4/5] bg-[#1c1c1c] border border-[#2a2a2a] rounded-xl flex flex-col items-center justify-between overflow-hidden hover:bg-[#242424] transition-colors">
+                <div className="absolute inset-0 pt-6 px-4 pb-12">
                   <Skin3DViewer 
                     skinUrl={item.type === 'skin' ? item.image_url : undefined} 
                     capeUrl={item.type === 'cape' ? item.image_url : undefined} 
+                    autoRotate={true}
                     className="w-full h-full bg-transparent pointer-events-none"
                   />
                 </div>
-                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-between items-end z-10">
-                  <span className={`text-[10px] font-black shadow-black drop-shadow-md uppercase tracking-widest ${item.type === 'skin' ? 'text-orange-400' : 'text-purple-400'}`}>
-                    {item.type}
-                  </span>
-                  <div 
-                    title={item.is_free ? "Download for free" : `Buy for $${item.price?.toFixed(2)}`}
-                    className="text-white drop-shadow-md"
-                  >
-                    {item.is_free ? <Download className="w-5 h-5" /> : <ShoppingCart className="w-5 h-5" />}
+                
+                {/* Information area at bottom */}
+                <div className="absolute inset-x-0 bottom-0 p-3 flex justify-center items-center z-10 text-xs font-semibold text-neutral-400">
+                  <div className="flex items-center gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
+                    <UserIcon className="w-3.5 h-3.5" />
+                    <span>{Math.floor(Math.random() * 20000)}</span> {/* mock user count */}
                   </div>
                 </div>
-              </div>
-              <div className="mt-4 text-center px-2 w-full">
-                <h3 className="font-bold text-sm text-neutral-200 truncate">{item.title}</h3>
-                <span className="text-xs text-indigo-400 font-bold block mt-1">
-                  {item.is_free ? <span className="text-green-400">Free</span> : `$${item.price?.toFixed(2)}`}
-                </span>
               </div>
             </Link>
           ))}

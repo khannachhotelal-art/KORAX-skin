@@ -7,9 +7,21 @@ interface Skin3DViewerProps {
   width?: number;
   height?: number;
   className?: string;
+  animation?: 'walk' | 'run' | 'fly' | 'idle' | 'none';
+  playing?: boolean;
+  autoRotate?: boolean;
 }
 
-export default function Skin3DViewer({ skinUrl, capeUrl, width = 300, height = 400, className = "" }: Skin3DViewerProps) {
+export default function Skin3DViewer({ 
+  skinUrl, 
+  capeUrl, 
+  width = 300, 
+  height = 400, 
+  className = "",
+  animation = 'walk',
+  playing = true,
+  autoRotate = false
+}: Skin3DViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<skinview3d.SkinViewer | null>(null);
 
@@ -29,13 +41,31 @@ export default function Skin3DViewer({ skinUrl, capeUrl, width = 300, height = 4
       viewerRef.current.canvas.style.objectFit = "contain";
       containerRef.current.appendChild(viewerRef.current.canvas);
 
-      // Add animations
-      viewerRef.current.animation = new skinview3d.WalkingAnimation();
-      viewerRef.current.autoRotate = true;
+      // Setup initial state
+      viewerRef.current.autoRotate = autoRotate;
       viewerRef.current.zoom = 0.8;
     }
 
     const viewer = viewerRef.current;
+    
+    // Update Animation
+    if (animation === 'walk') {
+      viewer.animation = new skinview3d.WalkingAnimation();
+    } else if (animation === 'run') {
+      viewer.animation = new skinview3d.RunningAnimation();
+    } else if (animation === 'fly') {
+      viewer.animation = new skinview3d.FlyingAnimation();
+    } else if (animation === 'idle') {
+      viewer.animation = new skinview3d.IdleAnimation();
+    } else {
+      viewer.animation = null;
+    }
+
+    if (viewer.animation) {
+      viewer.animation.paused = !playing;
+    }
+
+    viewer.autoRotate = autoRotate;
     
     // Resize Observer
     const observer = new ResizeObserver((entries) => {
@@ -74,7 +104,7 @@ export default function Skin3DViewer({ skinUrl, capeUrl, width = 300, height = 4
          viewerRef.current = null;
       }
     };
-  }, [skinUrl, capeUrl, width, height]);
+  }, [skinUrl, capeUrl, width, height, animation, playing, autoRotate]);
 
   return <div ref={containerRef} className={`w-full h-full relative overflow-hidden ${className}`} />;
 }
